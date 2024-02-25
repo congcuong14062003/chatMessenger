@@ -45,6 +45,11 @@ class PrivateMessage {
         const values = [message.sender_id, message.receiver_id, message.room_id, message.message_text];
         await pool.query(query, values);
     }
+    static async getMessageByRoomId(room_id) {
+        const query = `SELECT * FROM PrivateMessages WHERE room_id = ${room_id} ORDER BY sent_at asc`
+        const [result] = await pool.query(query);
+        return result ?? null;
+    }
 }
 
 export default PrivateMessage;

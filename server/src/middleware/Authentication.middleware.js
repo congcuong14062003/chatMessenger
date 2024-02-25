@@ -16,6 +16,7 @@ export async function Authentication(req, res, next) {
             UserTokenController.login(req, res, next);
         } else {
             const user = await User.checkAccount(req.body);
+            console.log("user: ", user);
             if (user) {
                 req.body.user_id = user.user_id;
                 UserTokenController.login(req, res, next);

@@ -60,7 +60,7 @@ class UserToken {
             };
 
             const [existingToken] = await this.findByUserId(userId);
-            if (existingToken.token) { // nếu có id_user này thì
+            if (existingToken?.token) { // nếu có id_user này thì
                 if (this.isTokenExpired(existingToken.token)) { // kiểm tra rftk còn hạn k, nếu hết
                     accessToken = jwt.sign(payload, user.password_hash, { expiresIn: '30m' }); // tạo ac và rf mới
                     refreshToken = jwt.sign(payload, user.password_hash, { expiresIn: '1d' });
@@ -128,6 +128,8 @@ class UserToken {
             return true;
         }
     }
+
+    
 }
 
 export default UserToken;

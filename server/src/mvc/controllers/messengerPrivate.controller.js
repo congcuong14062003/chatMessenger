@@ -1,6 +1,8 @@
 import PrivateMessage from "../models/messengerPrivate.model";
+import Room from "../models/room.model";
 const sendPrivateMessage = async (req, res) => {
-    try {console.log("req.body: ", req.body); 
+    try {
+        console.log("req.body: ", req.body);
 
         const { message_text, user_id } = req.body;
         const receiver_id = req.params.receiver_id;
@@ -22,4 +24,23 @@ const sendPrivateMessage = async (req, res) => {
     }
 };
 
-export { sendPrivateMessage };
+const getPrivateMessage = async (req, res) => {
+    try {
+        const { user_id } = req.body;
+        const receiver_id = req.params.receiver_id;
+        const room_id = await Room.getRoomByIDUser(user_id, receiver_id);
+        if (!room_id) {
+            throw new Error("Invalid room ID provided for user " + user_id);
+        }
+        const data = await PrivateMessage.getMessageByRoomId(room_id);
+        if (data) {
+            res.status(200).json(data);
+        } else {
+            res.status(404).json({ message: 'Invalid Message' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error ' + error.message });
+    }
+}
+
+export { sendPrivateMessage, getPrivateMessage };

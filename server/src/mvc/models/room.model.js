@@ -27,6 +27,17 @@ class Room {
         }
     }
 
+    static async getRoomByIDUser(sender_id, receiver_id) {
+        try {
+            // Tạo một room mới với room_name null và room_id tự tăng
+            const query = `select room_id from PrivateMessages where sender_id = ${sender_id} and receiver_id = ${receiver_id} or sender_id = ${receiver_id} and receiver_id = ${sender_id} group by room_id`;
+            const [result] = await pool.query(query);
+            return result[0].room_id ?? null;
+        } catch (error) {
+            console.error('Error creating new room:', error);
+            return null;
+        }
+    }
 
     static async createNewRoom() {
         try {

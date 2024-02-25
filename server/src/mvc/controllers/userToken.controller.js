@@ -24,11 +24,11 @@ class UserTokenController {
     // Xoá token khi đăng xuất
     static async logout(req, res) {
         try {
-            const { userId } = req.body; // Giả sử userId được gửi từ client
+            const { user_id } = req.body; // Giả sử user_id được gửi từ client
 
             // Xoá token
-            await UserToken.deleteById(userId);
-
+            await UserToken.deleteById(user_id);
+            res.clearCookie("accessToken");
             res.json({ message: 'Logged out successfully.' });
         } catch (error) {
             console.error(error);
