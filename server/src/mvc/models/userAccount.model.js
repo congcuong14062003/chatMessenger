@@ -46,10 +46,8 @@ class User {
 
     static async checkAccount(data) {
         const sql = 'SELECT * FROM Users WHERE email = ? AND password_hash = ?';
-        console.log("data", data);
         const [rows] = await pool.query(sql, [data.email, hashText(data.password_hash)]);
-        console.log("pass: ", hashText(data.password_hash));
-        console.log("rows", rows);
+
         if (rows.length > 0) {
             return new User(rows[0]);
         } else {

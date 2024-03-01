@@ -15,7 +15,6 @@ class Room {
                    OR (sender_id = ${receiver_id} AND receiver_id = ${sender_id}) 
             `;
             const [result] = await pool.query(query);
-            console.log("res:", result);
             if (result.length > 0) {
                 return new Room({ room_id: result[0].room_id });
             } else {

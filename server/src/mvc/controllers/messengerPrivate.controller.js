@@ -2,7 +2,6 @@ import PrivateMessage from "../models/messengerPrivate.model";
 import Room from "../models/room.model";
 const sendPrivateMessage = async (req, res) => {
     try {
-        console.log("req.body: ", req.body);
 
         const { message_text, user_id } = req.body;
         const receiver_id = req.params.receiver_id;

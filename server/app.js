@@ -8,12 +8,13 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 var cors = require('cors')
 var cookieParser = require('cookie-parser');
-
+const socketIo = require('socket.io');
+const io = socketIo(server);
 app.use(cookieParser());
 //server
 app.use(cors({
-	origin: 'http://localhost:3000',
-	credentials: true,
+    origin: 'http://localhost:3000',
+    credentials: true,
 }));
 
 
@@ -23,6 +24,25 @@ app.use(bodyParser.json());
 
 //set morgan log
 app.use(morgan("dev"));
+
+io.on('connection', (socket) => {
+    console.log('New client connected', socket.id);
+
+    socket.on('message', (data) => {
+        console.log('Received message:', data);
+        // Xử lý tin nhắn ở đây và gửi lại cho các client khác
+        // socket.broadcast.emit('message', data);
+        io.emit("message", { message: "Chào số 7 nhé. Có 1 tin nhắn dành cho bạn" });
+
+        // Gửi thông báo cho đối phương về việc nhận tin nhắn mới
+        io.emit("notification", { message: "Bạn nhận được một tin nhắn mới" });
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Client disconnected');
+    });
+});
+
 
 
 
