@@ -26,7 +26,7 @@ class PrivateMessage {
         // Lưu tin nhắn vào cơ sở dữ liệu
         await this.saveMessageToDatabase(newMessage);
 
-        return newMessage;
+        return newMessage || [];
     }
 
     static async getOrCreateRoomId(sender_id, receiver_id) {
