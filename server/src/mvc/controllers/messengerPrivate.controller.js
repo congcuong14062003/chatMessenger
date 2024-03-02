@@ -16,7 +16,7 @@ const sendPrivateMessage = async (req, res) => {
             message_text: message_text
         });
 
-        res.status(201).json({ message: 'Private message sent successfully', data: newMessage });
+        res.status(200).json({ message: 'Private message sent successfully', data: newMessage });
     } catch (error) {
         console.error('Error sending private message:', error);
         res.status(500).json({ message: 'Internal server error' });

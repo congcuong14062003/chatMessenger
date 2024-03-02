@@ -26,7 +26,7 @@ class PrivateMessage {
         // Lưu tin nhắn vào cơ sở dữ liệu
         await this.saveMessageToDatabase(newMessage);
 
-        return newMessage || [];
+        return newMessage ?? [];
     }
 
     static async getOrCreateRoomId(sender_id, receiver_id) {
@@ -48,7 +48,7 @@ class PrivateMessage {
     static async getMessageByRoomId(room_id) {
         const query = `SELECT * FROM PrivateMessages WHERE room_id = ${room_id} ORDER BY sent_at asc`
         const [result] = await pool.query(query);
-        return result ?? null;
+        return result ?? [];
     }
 }
 
