@@ -25,23 +25,41 @@ app.use(bodyParser.json());
 //set morgan log
 app.use(morgan("dev"));
 
+
+
+let userOnline = {};
 io.on('connection', (socket) => {
     console.log('New client connected', socket.id);
 
-    socket.on('message', (data) => {
-        console.log('Received message:', data);
-        // Xử lý tin nhắn ở đây và gửi lại cho các client khác
-        // socket.broadcast.emit('message', data);
-        io.emit("message", { message: "Chào số 7 nhé. Có 1 tin nhắn dành cho bạn" });
+    socket.on('online', data => {
+        userOnline[data.myId] = socket.id; // Lưu trữ socket.id dựa trên myId của người dùng
+        console.log(userOnline);
+    });
 
-        // Gửi thông báo cho đối phương về việc nhận tin nhắn mới
-        io.emit("notification", { message: "Bạn nhận được một tin nhắn mới" });
+    socket.on('messagePrivate', (data) => {
+        console.log('Received messagePrivate:', data);
+       
+        // Gửi tin nhắn cho người gửi (nếu cần)
+        io.to(userOnline[data.sender_id]).emit("messagePrivate", { messagePrivate: `Tin nhắn từ số ${data.sender_id} gửi cho số ${data.receiver_id}` });
+
+        // Gửi tin nhắn cho người nhận
+        if(userOnline[data.receiver_id]) { // Kiểm tra xem người nhận có online không
+            io.to(userOnline[data.receiver_id]).emit("messagePrivate", { messagePrivate: `Tin nhắn từ số ${data.sender_id} gửi cho số ${data.receiver_id}` });
+        } else {
+            console.log("Người nhận không online.");
+        }
     });
 
     socket.on('disconnect', () => {
+        // Xóa người dùng khỏi danh sách online khi họ ngắt kết nối
+        let disconnectedUserId = Object.keys(userOnline).find(key => userOnline[key] === socket.id);
+        if(disconnectedUserId) {
+            delete userOnline[disconnectedUserId];
+        }
         console.log('Client disconnected');
     });
 });
+
 
 
 
